@@ -1,3 +1,4 @@
 * Push svn:gitauthors up and find the closest one of those instead
 * Figure out hooks for auto creating repos on github and gitorious if they don't already exist
-* Figure out pre-commit hook to look for svn:gitdesc, svn:gitauthors, etc
+* Figure out pre-commit hook to look for svn:gitdesc, svn:gitauthors, git-svn, etc
+* Write "installer" to run from this directory and configure the hooks in a svn repo
