@@ -1,0 +1,3 @@
+#!/bin/sh
+GITBASE="/var/git/"
+exec ssh -i $GITBASE/github_rsa -o StrictHostKeyChecking=false $*

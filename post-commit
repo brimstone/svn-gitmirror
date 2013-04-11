@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#   [1] REPOS-PATH   (the path to this repository)
+#   [2] REV          (the number of the revision just committed)
+
+REPO="$1"
+REV="$2"
+
+GITBASE="/var/git/"
+
+# find every directory affected by this commit
+svnlook -r "$REV" dirs-changed "$REPO" | while read -r adir; do adir="/$adir"; while [ "$adir" != "/" ]; do echo $adir; adir="${adir%/*/}/"; done; done | sort -r | uniq | while read -r adir; do
+	# search from most specific to least specific, looking for svn:gitmirror attributes
+	gitrepo="$(svn propget svn:gitmirror file://$REPO$adir)"
+	[ -n "$gitrepo" ] && echo "$adir"
+done | while read -r adir; do
+	# now that we have those located
+	# create a unique name and verify the git repo is setup
+	gitname="$(sha256sum <<< "$REPO$adir" | awk '{print $1}')"
+	echo "$REPO$adir is now $GITBASE/$gitname"
+	[ ! -e $GITBASE/$gitname.txt ] && svn propget svn:gitauthors file://$REPO$adir > $GITBASE/$gitname.txt
+	if [ ! -d $GITBASE/$gitname ]; then
+		# clone our directory if we need it
+		git svn clone "file://$REPO$adir" -A $GITBASE/$gitname.txt $GITBASE/$gitname
+		cd $GITBASE/$gitname
+		# add all of our external repos
+		i=1
+		svn propget svn:gitmirror file://$REPO$adir | while read -r arepo; do
+			echo "$i: $arepo"
+			git remote add origin$i "$arepo"
+			((i++))
+		done
+	else
+		# else update our directory
+		cd $GITBASE/$gitname
+		git svn rebase
+	fi
+	# push our directory upstream
+	export GIT_SSH="$GITBASE/ssh"
+	git remote -v | awk '/\(push\)$/ {print $1}' | while read -r origin; do
+		git push -u $origin master
+	done
+done
+exit 0
