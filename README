@@ -1,3 +1,20 @@
 Little project to be used a a post-commit hook in a svn repo that then mirrors it to multiple git repos.
 
 This way I have a "presence" on github without actually having to use git regularly. My workflow doesn't change and people get to see the cool stuff I work on.
+
+Installation
+============
+* check this out somewhere, like /var/svn/svn:gitmirror
+* make an ssh key with ssh-keygen
+* import that into whatever service
+* Make a repo on that service
+* soft link your repo's post-commit hook to this one instead
+* change post-commit to find this ssh script
+* change the ssh script to find your sshkey
+* start adding the properties svn:gitmirror and svn:gitauthors to your directories
+
+svn:gitmirrors format:
+git@whatever.tld/user/repo.git
+
+svn:gitauthors format:
+user=realname <user@domain>
