@@ -19,8 +19,8 @@ Installation
 * change the ssh script to find your sshkey
 * start adding the properties svn:gitmirror and svn:gitauthors to your directories
 
-svn:gitmirrors format:
+svn:gitmirror format:
 git@whatever.tld/user/repo.git
 
 svn:gitauthors format:
-user=realname <user@domain>
+svn user=git realname <user@domain>
