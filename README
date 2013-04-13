@@ -2,6 +2,12 @@ Little project to be used a a post-commit hook in a svn repo that then mirrors i
 
 This way I have a "presence" on github without actually having to use git regularly. My workflow doesn't change and people get to see the cool stuff I work on.
 
+Requires
+========
+* git
+* git-svn
+* svn (probably)
+
 Installation
 ============
 * check this out somewhere, like /var/svn/svn:gitmirror
